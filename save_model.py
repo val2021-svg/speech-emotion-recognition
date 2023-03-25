@@ -1,4 +1,6 @@
 import matplotlib.pyplot as plt
+import os
+import torch
 
 class SaveBestModel:
     """
@@ -27,6 +29,8 @@ class SaveBestModel:
     def plot_results(self, epoch_table, output_train, output_test):
         
         save_path = f'{self.images_path}/{self.feature}/{self.session_to_test}'
+        if not os.path.exists(save_path)
+        os.makedirs(save_path)
 
         plt.plot(epoch_table, output_train["loss"], label="Train")
         plt.plot(epoch_table, output_test["loss"], label="Test")
