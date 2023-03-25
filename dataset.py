@@ -18,7 +18,6 @@ class IEMOCAPDataset(Dataset):
           self.iemocap_table = data_root.query(f'session=={session_to_test}')
         print(self.iemocap_table)
         self.table = self.iemocap_table
-        self.root_path = data_root
         self.train = train
         self.sequence_length = sequence_length
         self.features_name = features_name
@@ -33,7 +32,7 @@ class IEMOCAPDataset(Dataset):
     @staticmethod
     def load_wav(path: str):
         """ Load audio  """
-        path = self.root_path + "/" + path
+        path = "/content/gdrive/MyDrive/IEMOCAP_full_release_withoutVideos_sentenceOnly/" + path
         signal, sr = librosa.load(path)
         return signal, sr
 
