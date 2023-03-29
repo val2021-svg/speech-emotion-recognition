@@ -1,5 +1,6 @@
 import numpy as np
 import librosa 
+import torch
 from torch.utils.data import Dataset
 import fairseq
 
@@ -10,8 +11,10 @@ class IEMOCAPDataset(Dataset):
                  sequence_length: int = 100,
                  features_name: str = "spec",
                  session_to_test: int = 5,
-                 from_npy: str = None
+                 from_npy: str = None,
+                 wa2v_weights_path:str = None
                  ):
+        
         super().__init__()
         if train:
           self.iemocap_table = data_root.query(f'session!={session_to_test}')
@@ -28,12 +31,13 @@ class IEMOCAPDataset(Dataset):
         self.emo_to_int = dict(hap= 0, ang= 1, neu= 2, sad= 3, exc= 0)
 
         # WAV2VEC
-        cp_path = '/content/gdrive/MyDrive/wav2vec_large.pt'
+        if features_name == "wav2vec" 
+        cp_path = wa2v_weights_path
         self.model_wav2vec, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task([cp_path])
         self.model_wav2vec = self.model_wav2vec[0]
         self.model_wav2vec.eval()
 
-        
+
     def __len__(self):
         return len(self.table)
 
