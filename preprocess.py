@@ -2,8 +2,8 @@ import numpy as np
 from tqdm import tqdm
 from dataset import IEMOCAPDataset 
 
-def preprocess(preprocessed_path, df, features = None, session_to_test= None, train= None):
-    x_features_train = IEMOCAPDataset(data_root=df, features_name=features, session_to_test=session_to_test, train=train)
+def preprocess(preprocessed_path, df, features = None, session_to_test= None, train= None, wa2v_weights_path=None):
+    x_features_train = IEMOCAPDataset(data_root=df, features_name=features, session_to_test=session_to_test, train=train, wa2v_weights_path=wa2v_weights_path)
     len = x_features_train.__len__()
     
     all_data = []

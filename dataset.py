@@ -32,7 +32,7 @@ class IEMOCAPDataset(Dataset):
         self.emo_to_int = dict(hap= 0, ang= 1, neu= 2, sad= 3, exc= 0)
 
         # WAV2VEC
-        if features_name == "wav2vec":
+        if features_name == "wav2vec" and from_npy is None:
             cp_path = wa2v_weights_path
             self.model_wav2vec, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task([cp_path])
             self.model_wav2vec = self.model_wav2vec[0]

@@ -19,10 +19,11 @@ class NetIemocap(nn.Module):
         self.lstm = nn.LSTM(input_size=input_size, hidden_size=hidden_size,
                           num_layers=num_layers, batch_first=True) #lstm
 
-        self.fc_1 =  nn.Linear(hidden_size, 128) #fully connected 1
-        self.fc = nn.Linear(128, num_classes) #fully connected last layer
-
+        self.fc_1 =  nn.Linear(hidden_size, 128) # fully connected 1
         self.relu = nn.ReLU()
+        self.fc = nn.Linear(128, num_classes) # fully connected last layer
+
+        
     
     def forward(self,x):
         h_0 = Variable(torch.zeros(self.num_layers, x.size(0), self.hidden_size)).cuda() #hidden state
