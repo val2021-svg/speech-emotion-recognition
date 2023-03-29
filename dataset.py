@@ -1,6 +1,7 @@
 import numpy as np
 import librosa 
 from torch.utils.data import Dataset
+import fairseq
 
 
 class IEMOCAPDataset(Dataset):
@@ -26,6 +27,13 @@ class IEMOCAPDataset(Dataset):
           self.all_data = np.load(self.from_npy, allow_pickle=True) 
         self.emo_to_int = dict(hap= 0, ang= 1, neu= 2, sad= 3, exc= 0)
 
+        # WAV2VEC
+        cp_path = '/content/gdrive/MyDrive/wav2vec_large.pt'
+        self.model_wav2vec, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task([cp_path])
+        self.model_wav2vec = self.model_wav2vec[0]
+        self.model_wav2vec.eval()
+
+        
     def __len__(self):
         return len(self.table)
 
@@ -56,14 +64,18 @@ class IEMOCAPDataset(Dataset):
 
     def spec(self, signal, sample_rate): 
         X = librosa.stft(signal, 
-                         n_fft=1024,
+                        n_fft=1024,
                         center=False,
-                         hop_length=256,
+                        hop_length=256,
                         win_length = 1024)
         
         X= np.abs(X)**2
         return X
 
+    def wav2vec(self, signal, sample_rate):
+        wav2vec = self.model_wav2vec.feature_extractor(signal)
+        return wav2vec
+    
 
     @staticmethod
     def padding(data, seq_length=50):
@@ -83,7 +95,7 @@ class IEMOCAPDataset(Dataset):
         elif self.features_name.lower() == "melspec": # reprsentation condensee du spectogram
             features = self.melspec(signal, sr)
         elif self.features_name.lower() == "wav2vec": 
-            features = self.wav2vec(signal, parameters)
+            features = self.wav2vec(torch.from_numpy(signal)[None],sr)[0].cpu().detach().numpy()
         elif self.features_name.lower() == "spec": 
             features = self.spec(signal, sr)  
         else:
