@@ -13,7 +13,7 @@ class SaveBestModel:
         self.weights_path = weights_path
         self.images_path = images_path
         self.feature = feature
-        self.session = session_to_test
+        self.session_to_test = session_to_test
 
     def save_model(self, current_valid_loss, epoch, acc, f1, model): 
         if current_valid_loss < self.best_valid_loss:
