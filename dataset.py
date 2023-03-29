@@ -6,7 +6,8 @@ import fairseq
 
 
 class IEMOCAPDataset(Dataset):
-    def __init__(self, data_root: str,
+    def __init__(self, 
+                 data_root: str,
                  train: bool = True,
                  sequence_length: int = 100,
                  features_name: str = "spec",
@@ -31,12 +32,11 @@ class IEMOCAPDataset(Dataset):
         self.emo_to_int = dict(hap= 0, ang= 1, neu= 2, sad= 3, exc= 0)
 
         # WAV2VEC
-        if features_name == "wav2vec" 
-        cp_path = wa2v_weights_path
-        self.model_wav2vec, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task([cp_path])
-        self.model_wav2vec = self.model_wav2vec[0]
-        self.model_wav2vec.eval()
-
+        if features_name == "wav2vec":
+            cp_path = wa2v_weights_path
+            self.model_wav2vec, cfg, task = fairseq.checkpoint_utils.load_model_ensemble_and_task([cp_path])
+            self.model_wav2vec = self.model_wav2vec[0]
+            self.model_wav2vec.eval()
 
     def __len__(self):
         return len(self.table)
