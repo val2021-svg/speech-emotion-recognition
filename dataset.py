@@ -49,7 +49,6 @@ class IEMOCAPDataset(Dataset):
     @staticmethod
     def load_wav(path: str):
         """ Load audio  """
-        path = self.root_path + "/" + path
         signal, sr = librosa.load(path)
         return signal, sr
 
@@ -120,7 +119,8 @@ class IEMOCAPDataset(Dataset):
             emotion = self.emo_to_int[emotion]
 
             if self.from_npy is None:
-              audio, sr = self.load_wav(line)
+              wav_path = self.root_path + "/" + line
+              audio, sr = self.load_wav(wav_path) 
               features = self.extract_features(audio, sr).transpose()
             else:
               features = self.all_data[item]
