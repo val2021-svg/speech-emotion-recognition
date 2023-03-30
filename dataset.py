@@ -13,6 +13,7 @@ class IEMOCAPDataset(Dataset):
                  features_name: str = "spec",
                  session_to_test: int = 5,
                  from_npy: str = None,
+                 root_path:str = None,
                  wa2v_weights_path:str = None
                  ):
         
@@ -27,8 +28,12 @@ class IEMOCAPDataset(Dataset):
         self.sequence_length = sequence_length
         self.features_name = features_name
         self.from_npy = from_npy
+        
         if self.from_npy is not None:
           self.all_data = np.load(self.from_npy, allow_pickle=True) 
+        else:
+            self.root_path = root_path
+            
         self.emo_to_int = dict(hap= 0, ang= 1, neu= 2, sad= 3, exc= 0)
 
         # WAV2VEC
@@ -44,7 +49,7 @@ class IEMOCAPDataset(Dataset):
     @staticmethod
     def load_wav(path: str):
         """ Load audio  """
-        path = "/content/gdrive/MyDrive/IEMOCAP_full_release_withoutVideos_sentenceOnly/" + path
+        path = self.root_path + "/" + path
         signal, sr = librosa.load(path)
         return signal, sr
 
