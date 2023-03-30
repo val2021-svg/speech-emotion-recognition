@@ -28,12 +28,11 @@ class IEMOCAPDataset(Dataset):
         self.sequence_length = sequence_length
         self.features_name = features_name
         self.from_npy = from_npy
-        
+
         if self.from_npy is not None:
           self.all_data = np.load(self.from_npy, allow_pickle=True) 
         else:
-            self.root_path = root_path
-            
+           self.root_path = root_path
         self.emo_to_int = dict(hap= 0, ang= 1, neu= 2, sad= 3, exc= 0)
 
         # WAV2VEC
@@ -72,18 +71,18 @@ class IEMOCAPDataset(Dataset):
 
     def spec(self, signal, sample_rate): 
         X = librosa.stft(signal, 
-                        n_fft=1024,
+                         n_fft=1024,
                         center=False,
-                        hop_length=256,
+                         hop_length=256,
                         win_length = 1024)
         
         X= np.abs(X)**2
         return X
 
     def wav2vec(self, signal, sample_rate):
-        wav2vec = self.model_wav2vec.feature_extractor(signal)
-        return wav2vec
-    
+      wav2vec = self.model_wav2vec.feature_extractor(signal)
+      return wav2vec
+
 
     @staticmethod
     def padding(data, seq_length=50):
@@ -117,14 +116,14 @@ class IEMOCAPDataset(Dataset):
             line = self.iemocap_table["wav_path"].iloc[item]
             emotion = self.iemocap_table["emotion"].iloc[item]
             emotion = self.emo_to_int[emotion]
-
+            
             if self.from_npy is None:
               wav_path = self.root_path + "/" + line
               audio, sr = self.load_wav(wav_path) 
-              features = self.extract_features(audio, sr).transpose()
+              features = self.extract_features(audio, sr=16000).transpose()
             else:
               features = self.all_data[item]
-
+              
             self.number_frames = features.shape[0]
             if self.number_frames > self.sequence_length:
                 break
@@ -135,4 +134,4 @@ class IEMOCAPDataset(Dataset):
 
         self.current_frame = np.random.randint(0, self.number_frames - self.sequence_length)
         self.out = features[self.current_frame: self.current_frame + self.sequence_length]
-        return self.out, emotion  
+        return torch.from_numpy(self.out), torch.tensor(emotion)  
