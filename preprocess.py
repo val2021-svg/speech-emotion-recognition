@@ -14,7 +14,8 @@ def preprocess(version, preprocessed_path, df, features = None, session_to_test=
     all_data = []
     for i in tqdm(range(len)):
         line = x_features_train.iemocap_table["wav_path"].iloc[i]
-        audio, sr = x_features_train.load_wav(line)
+        wav_path = root_path + "/" + line
+        audio, sr = x_features_train.load_wav(wav_path)
         data = x_features_train.extract_features(audio, sr).transpose()
         all_data.append(data)
 
